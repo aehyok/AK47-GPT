@@ -33,6 +33,7 @@ export async function connectToDatabase(): Promise<void> {
   global.mongodb = 'connecting';
   try {
     mongoose.set('strictQuery', true);
+    mongoose.set('debug', true);
     global.mongodb = await mongoose.connect(process.env.MONGODB_URI as string, {
       bufferCommands: true,
       dbName: process.env.MONGODB_NAME,
@@ -66,3 +67,10 @@ export * from './models/kb';
 export * from './models/inform';
 export * from './models/system';
 export * from './models/image';
+
+
+export * from './models/dictionaryGroup';
+export * from './models/dictionaryItem';
+export * from './models/examQuestion';
+export * from './models/examPaper';
+export * from './models/examAnswer';

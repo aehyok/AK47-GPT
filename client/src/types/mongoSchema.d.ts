@@ -163,3 +163,67 @@ export interface informSchema {
   content: string;
   read: boolean;
 }
+
+
+/**
+ * 基础公共数据模型
+ */
+ interface BaseModel {
+  isDelete: boolean;
+  createAt: Date;
+  updateAt: Date;
+  createBy: string;
+  updateBy: string;
+}
+
+export interface DictionaryGroupModelSchema extends BaseModel {
+  _id: string;
+  name: string;
+  code: string;
+  order: number;
+  remark: string;
+}
+
+export interface DictionaryItemModelSchema extends BaseModel {
+  _id: string;
+  name: string;
+  code: string;
+  dictionaryGroupId: string;
+  parentId: string;
+  order: number;
+  isEnable: boolean;
+  remark: string;
+}
+
+export interface ExamQuestionModelSchema extends BaseModel {
+  _id: string;
+  question;
+  string;
+  answer: string;
+  categoryId: string;
+  themeId: string;
+  order: number;
+  isEnable: boolean;
+  remark: string;
+}
+
+export interface ExamPaperModelSchema extends BaseModel {
+  _id: string;
+  name: string;
+  level: string;
+  categoryId: string;
+  themeChoices: string[];
+  score: number;
+  questionCount: number;
+  remark: string;
+}
+
+export interface ExamAnswerModelSchema extends BaseModel {
+  _id: string;
+  paperId: string;
+  questionId: string;
+  answerContent: string;
+  gptContent: string;
+  score: Number;
+  remark: string;
+}
