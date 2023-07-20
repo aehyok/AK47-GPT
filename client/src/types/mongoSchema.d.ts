@@ -170,10 +170,10 @@ export interface informSchema {
  */
  interface BaseModel {
   isDelete: boolean;
-  createAt: Date;
-  updateAt: Date;
-  createBy: string;
-  updateBy: string;
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy: string;
+  updatedBy: string;
 }
 
 export interface DictionaryGroupModelSchema extends BaseModel {
@@ -188,17 +188,17 @@ export interface DictionaryItemModelSchema extends BaseModel {
   _id: string;
   name: string;
   code: string;
-  dictionaryGroupId: string;
+  groupCode: string;
   parentId: string;
   order: number;
   isEnable: boolean;
+  isVisible: boolean;
   remark: string;
 }
 
 export interface ExamQuestionModelSchema extends BaseModel {
   _id: string;
-  question;
-  string;
+  question: string;
   answer: string;
   categoryId: string;
   themeId: string;

@@ -25,23 +25,22 @@ const ExamQuestionSchema = new Schema({
     type: Boolean,
     default: true
   },
-  isDelete: {
+  isDeleted: {
     type: Boolean,
     default: false
   },
-  createAt: {
+  createdAt: {
     type: Date,
     default: () => new Date()
   },
-  updateAt: {
+  updatedAt: {
     type: Date,
-    default: () => new Date()
   },
-  createBy: {
+  createdBy: {
     type: Schema.Types.ObjectId,
     ref: 'user'
   },
-  updateBy: {
+  updatedBy: {
     type: Schema.Types.ObjectId,
     ref: 'user'
   }

@@ -14,28 +14,30 @@ const DictionaryItemSchema = new Schema({
     type: String,
   },
   parentId: {
-    type: Schema.Types.ObjectId,
-    ref: 'dictionaryitem'
+    type: String,
   },
   isEnable: {
     type: Boolean,
     default: true
   },
-  isDelete:{
+  isVisible: {
+    type: Boolean,
+    default: true
+  },
+  isDeleted:{
     type: Boolean,
     default: false,
   },
-  dictionaryGroupId: {
-    type: Schema.Types.ObjectId,
-    ref: 'dictionarygroup'
+  groupCode: {
+    type: String,
+    required: true,
   },
   createdAt: {
     type: Date,
     default: () => new Date()
   },
   updatedAt: {
-    type: Date,
-    default: () => new Date()
+    type: Date
   },
   createdBy: {
     type: Schema.Types.ObjectId,
