@@ -212,7 +212,7 @@ export interface ExamPaperModelSchema extends BaseModel {
   name: string;
   level: string;
   categoryId: string;
-  themeChoices: string[];
+  themeChoices: any[];
   score: number;
   questionCount: number;
   remark: string;

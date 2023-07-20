@@ -15,7 +15,7 @@ const ExamPaperSchema = new Schema({
   themeChoices: {
     type: [
       {
-        id: {
+        _id: {
           type: Schema.Types.ObjectId
         }
       }
@@ -29,23 +29,22 @@ const ExamPaperSchema = new Schema({
   remark: {
     type: String
   },
-  isDelete: {
+  isDeleted: {
     type: Boolean,
     default: false
   },
-  createAt: {
+  createdAt: {
     type: Date,
     default: () => new Date()
   },
-  updateAt: {
-    type: Date,
-    default: () => new Date()
+  updatedAt: {
+    type: Date
   },
-  createBy: {
+  createdBy: {
     type: Schema.Types.ObjectId,
     ref: 'user'
   },
-  updateBy: {
+  updatedBy: {
     type: Schema.Types.ObjectId,
     ref: 'user'
   }

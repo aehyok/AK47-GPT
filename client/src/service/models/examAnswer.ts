@@ -7,7 +7,7 @@ const ExamAnswerSchema = new Schema({
   },
   questionId: {
     type: Schema.Types.ObjectId,
-    ref: 'question'
+    ref: 'examquestion'
   },
   answerContent: {
     type: String,
@@ -21,23 +21,22 @@ const ExamAnswerSchema = new Schema({
   remark: {
     type: String,
   },
-  isDelete:{
+  isDeleted:{
     type: Boolean,
     default: false,
   },
-  createAt: {
+  createdAt: {
     type: Date,
     default: () => new Date()
   },
-  updateAt: {
+  updatedAt: {
     type: Date,
-    default: () => new Date()
   },
-  createBy: {
+  createdBy: {
     type: Schema.Types.ObjectId,
     ref: 'user'
   },
-  updateBy: {
+  updatedBy: {
     type: Schema.Types.ObjectId,
     ref: 'user'
   },
