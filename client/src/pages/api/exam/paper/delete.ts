@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { jsonRes } from '@/service/response';
-import { connectToDatabase, ExamQuestion } from '@/service/mongo';
+import { connectToDatabase, ExamPaper, ExamQuestion } from '@/service/mongo';
 import { authUser } from '@/service/utils/auth';
 
 /* 删除字典分组 */
@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     await connectToDatabase();
 
     // 删除字典分组
-    await ExamQuestion.updateOne(
+    await ExamPaper.updateOne(
       {
         _id
       },
