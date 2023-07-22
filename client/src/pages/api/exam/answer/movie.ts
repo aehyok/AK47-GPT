@@ -7,6 +7,40 @@ import { Configuration, OpenAIApi } from 'openai';
 //   console.log('WriteWriteWriteWriteWriteWriteWriteWriteWriteWriteWrite', movieTitle, releaseDate, director );
 // }
 
+// functions: [
+//   {
+//     name: "write_moivesinfo_to_database",
+//     description: "Write movies into the database.",
+//     parameters: {
+//         type: "object",
+//         properties: {
+//           movices:{
+//             type: "array",
+//             description: "return all movies",
+//             items: {
+//               type: "object",
+//               properties:  {
+//                 movieTitle: {
+//                   type: "string",
+//                   description: "Movie Title",
+//                 },
+//                 releaseDate: {
+//                   type: "string",
+//                   description: "Release Date",
+//                 },
+//                 director: {
+//                   type: "string",
+//                   description: "Director",
+//                 }
+//               },
+//               required: ["movieTitle", "releaseDate", "director"],
+//               }
+//             }
+//           }
+//         }
+//     }
+// ],
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   const configuration = new Configuration({
     apiKey: process.env.OPENAIKEY,
