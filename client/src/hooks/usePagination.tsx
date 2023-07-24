@@ -141,7 +141,7 @@ export const usePagination = <T = any,>({
         </Box>
       );
     },
-    [data.length, isLoading, mutate, pageNum, total]
+    [data?.length, isLoading, mutate, pageNum, total]
   );
 
   useLayoutEffect(() => {

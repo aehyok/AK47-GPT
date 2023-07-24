@@ -33,3 +33,18 @@ declare global {
     ['pdfjs-dist/build/pdf']: any;
   }
 }
+
+export type OperatingButtonType = {
+  type: string;
+  name: string;
+  onClickType: string;
+  fields?: AddEditformType[];
+  dialogTitle?: ((val: { [key: string]: string }) => ReactNode) | string;
+  dialogDescription?: ((val: { [key: string]: string }) => ReactNode) | string;
+  render?: (...args: any[]) => string;
+};
+
+export type columsType = {
+  name: string;
+  label: string;
+};

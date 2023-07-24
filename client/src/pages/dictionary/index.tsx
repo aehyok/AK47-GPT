@@ -1,0 +1,32 @@
+import React, { useEffect, useState } from 'react';
+import { Box, Flex } from '@chakra-ui/react';
+import SearchableTable from '../../hooks/useTable';
+// import { COLUMNS, data } from '@/constants/company';
+import { Heading } from '@chakra-ui/react';
+import { useCompanyConfig } from './config';
+const Company = () => {
+  const { tableData, operatingButton, onConfirm, COLUMNS } = useCompanyConfig();
+
+  useEffect(() => {}, []);
+  return (
+    <Flex h={'100%'} position={'relative'} direction={'column'}>
+      {/* 模型列表 */}
+      <Box position={'relative'} m={5} display="flex" justifyContent={'flex-start'}>
+        {/* <CompanySearch /> */}
+        {/* {modelId && <ModelDetail modelId={modelId} isPc={isPc} />} */}
+        <Heading>字典管理</Heading>
+      </Box>
+
+      <Box flex={1} h={'100%'} position={'relative'} m={5}>
+        {/* <CompanyTable /> */}
+        <SearchableTable
+          columns={COLUMNS}
+          operatingButton={operatingButton}
+          onConfirm={onConfirm}
+        />
+        {/* {modelId && <ModelDetail modelId={modelId} isPc={isPc} />} */}
+      </Box>
+    </Flex>
+  );
+};
+export default Company;
