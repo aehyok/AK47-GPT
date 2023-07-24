@@ -45,6 +45,12 @@ const Navbar = ({ unread }: { unread: number }) => {
         activeLink: ['/model/share']
       },
       {
+        label: '考卷',
+        icon: 'testPaper',
+        link: '/testPaper',
+        activeLink: ['/testPaper']
+      },
+      {
         label: '账号',
         icon: 'user',
         link: '/number',

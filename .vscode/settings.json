@@ -2,5 +2,25 @@
     "editor.formatOnSave": true, //每次保存自动格式化
     "editor.mouseWheelZoom": true,
     "typescript.tsdk": "./client/node_modules/typescript/lib",
-    "prettier.prettierPath": "./node_modules/prettier"
+    "prettier.prettierPath": "./node_modules/prettier",
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#cc79d0",
+        "activityBar.background": "#cc79d0",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#dedba1",
+        "activityBarBadge.foreground": "#15202b",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#cc79d0",
+        "statusBar.background": "#be53c3",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#cc79d0",
+        "statusBarItem.remoteBackground": "#be53c3",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#be53c3",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#be53c399",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#be53c3"
 }

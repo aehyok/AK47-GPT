@@ -4,51 +4,24 @@ import { jsonRes } from '@/service/response';
 import { connectToDatabase, ExamPaper, ExamQuestion, ExamAnswer } from '@/service/mongo';
 import { authUser } from '@/service/utils/auth';
 import _ from 'lodash';
-import mongoose from "mongoose"
-// 计算每个类型可以出多少个题目
-const calculatePerCount = (typeCount: number) => {
-  const totalProblems = 10;
-  const problemsPerType = Math.floor(totalProblems / typeCount);
-  var remainingProblems = totalProblems % typeCount;
-  var problems: number[] = [];
-  for (var i = 0; i < typeCount; i++) {
-    // For each type, add the appropriate number of problems
-    if (i === typeCount - 1) {
-        // If it's the last type, add the remaining problems
-        problems.push(problemsPerType + remainingProblems);
-    } else {
-        problems.push(problemsPerType);
-    }
-  }
-
-  return problems;
-}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
-    const {
-      name,
-      level,
-      categoryId,
-      themeChoices
-    } = req.body as {
+    const { name, level, categoryId, themeChoices } = req.body as {
       name: string;
       level: string;
       categoryId: string;
       themeChoices: [];
     };
 
+    console.log(
+      themeChoices,
+      'themeChoices----------------------------------------------------------------'
+    );
     // 凭证校验
     const { userId } = await authUser({ req, authToken: true });
 
     await connectToDatabase();
-
-    const session = await mongoose.startSession();
-    session.startTransaction();
-
-    await session.commitTransaction();
-    session.endSession(); 
-
     let response: any = null;
     // create
     response = await ExamPaper.create({
@@ -64,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const questionList: any[] = [];
 
-    const promiseList: any[] = []
+    const promiseList: any[] = [];
     themeChoices.forEach((item) => {
       const requestPromise = ExamQuestion.find(
         {
@@ -77,21 +50,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     });
 
     const promiseResult = await Promise.all(promiseList);
-    
-    promiseResult.forEach((item, index) => {
-      const temp = _.sampleSize(item, calculatePerCount(themeChoices.length)[index]);
+
+    promiseResult.forEach((item) => {
+      const temp = _.sampleSize(item, 5);
       questionList.push(...temp);
     });
 
+    console.log(
+      questionList,
+      '-----questionList-----===================================11111111111111111'
+    );
     const questionListObject = questionList.map((item) => {
+      console.log(item, '================================ item', item._id);
       return {
-        questionId:item._id,
-        paperId: response._id,
-        createdBy: userId
-      }
+        questionId: item._id,
+        paperId: response._id
+      };
     });
+    console.log(
+      questionListObject,
+      '-----questionList-----===================================22222222222222222'
+    );
     ExamAnswer.insertMany(questionListObject, function (error, result) {
-      if(error == null) {
+      console.log(error, result, 'error-result');
+      if (error == null) {
         jsonRes(res, {
           data: response._id
         });
