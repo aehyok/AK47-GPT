@@ -55,6 +55,12 @@ const Navbar = ({ unread }: { unread: number }) => {
         icon: 'user',
         link: '/number',
         activeLink: ['/number']
+      },
+      {
+        label: '题库分类',
+        icon: 'user',
+        link: '/dictionary',
+        activeLink: ['/dictionary']
       }
     ],
     [lastChatId, lastChatModelId, lastModelId]
