@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import NProgress from 'nprogress'; //nprogress module
 import Router from 'next/router';
 import { useGlobalStore } from '@/store/global';
+import { useDictionaryStore } from '@/store/dictionary';
 import 'nprogress/nprogress.css';
 import '@/styles/reset.scss';
 
@@ -34,8 +35,11 @@ function App({ Component, pageProps }: AppProps) {
     initData: { googleVerKey, baiduTongji }
   } = useGlobalStore();
 
+  const { initDictionary } = useDictionaryStore();
+
   useEffect(() => {
     loadInitData();
+    initDictionary();
   }, []);
 
   return (

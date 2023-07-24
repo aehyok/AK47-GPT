@@ -3,9 +3,10 @@ import { jsonRes } from '@/service/response';
 import { connectToDatabase, DictionaryItem, DictionaryGroup } from '@/service/mongo';
 import { authUser } from '@/service/utils/auth';
 import { PagingData } from '@/types';
+import { DictionaryType } from '@/api/response/dictionary.d';
 
 /* 获取字典分组列表 */
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<DictionaryType[]>) {
   try {
     const {
       groupCode,
