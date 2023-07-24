@@ -26,10 +26,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (keyword) {
       where = {
         ...where,
-        groupCode,
         name: keyword
       };
     } else {
+      where = {
+        ...where,
+      }
+    }
+
+    if(groupCode) { 
       where = {
         ...where,
         groupCode
