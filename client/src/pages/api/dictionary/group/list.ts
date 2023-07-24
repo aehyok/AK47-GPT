@@ -40,13 +40,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       DictionaryGroup.countDocuments(where)
     ]);
 
-    jsonRes<PagingData<any>>(res, {
-      data: {
+    jsonRes(<any>res, {
         pageNum: pageNum,
         pageSize,
         data: models,
         total
-      }
     });
 
     // jsonRes(res, {

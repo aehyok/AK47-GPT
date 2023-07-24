@@ -59,13 +59,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const total = await ExamQuestion.countDocuments(where);
     console.log(data, 'data')
     console.log(total, 'total')
-    jsonRes<PagingData<any>>(res, {
-      data: {
-        pageNum: pageNum,
-        pageSize,
-        data: data,
-        total
-      }
+    jsonRes<any>(res, {
+      pageNum: pageNum,
+      pageSize,
+      data: data,
+      total
     });
 
   } catch (err) {
