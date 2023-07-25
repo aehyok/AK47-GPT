@@ -60,10 +60,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log(data, 'data')
     console.log(total, 'total')
     jsonRes<any>(res, {
-      pageNum: pageNum,
-      pageSize,
-      data: data,
-      total
+      data: {
+        pageNum: pageNum,
+        pageSize,
+        data: data,
+        total
+      }
     });
 
   } catch (err) {
