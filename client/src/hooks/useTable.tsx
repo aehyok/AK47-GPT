@@ -21,6 +21,7 @@ import AlertDialogForm from './useAlertDialog';
 import { usePagination } from './usePagination';
 import type { RequestType, RequsetListType } from '@/types/request';
 import type { OperatingButtonType, columsType } from '../types/index';
+import { listParameterType } from '@/types/request';
 
 import { getDictionaryList } from '@/api/dictionary';
 import { UseMutateFunction } from '@tanstack/react-query/build/lib/types';
@@ -28,11 +29,13 @@ import { UseMutateFunction } from '@tanstack/react-query/build/lib/types';
 const SearchableTable = ({
   columns,
   operatingButton,
-  onConfirm
+  onConfirm,
+  listApi
 }: {
   columns: Array<columsType>;
   operatingButton: Array<OperatingButtonType>;
   onConfirm: Function;
+  listApi: (data: listParameterType) => Promise<unknown>;
 }) => {
   type formDataType = {
     formList: any;
@@ -63,7 +66,7 @@ const SearchableTable = ({
     Pagination: () => JSX.Element;
     getData: UseMutateFunction<null, unknown, number | undefined, unknown>;
   } = usePagination({
-    api: getDictionaryList,
+    api: listApi,
     pageSize: 10,
     params: {
       keyword: searchTerm
