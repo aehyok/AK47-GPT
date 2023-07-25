@@ -41,10 +41,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ]);
 
     jsonRes(<any>res, {
+      data: {
         pageNum: pageNum,
         pageSize,
         data: models,
         total
+      }
     });
 
     // jsonRes(res, {

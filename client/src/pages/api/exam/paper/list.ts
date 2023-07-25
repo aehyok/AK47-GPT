@@ -78,10 +78,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const total = await ExamPaper.countDocuments(where);
 
     jsonRes<any>(res, {
-      pageNum: pageNum,
-      pageSize,
-      data: data,
-      total
+      data: {
+        pageNum: pageNum,
+        pageSize,
+        data: data,
+        total
+      }
     });
 
   } catch (err) {
