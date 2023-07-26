@@ -13,28 +13,25 @@ import {
   Box,
   Text,
   Flex,
-  useDisclosure
+  useDisclosure,
+  useToast
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import AlertDialogForm from './useAlertDialog';
 // import { useOperationBtnHook } from '@/constants/company';
 import { usePagination } from './usePagination';
-import type { RequestType, RequsetListType } from '@/types/request';
-import type { OperatingButtonType, columsType } from '../types/index';
+import type { OperatingButtonType, columnsType } from '../types/index';
 import { listParameterType } from '@/types/request';
 
-import { getDictionaryList } from '@/api/dictionary';
 import { UseMutateFunction } from '@tanstack/react-query/build/lib/types';
 
 const SearchableTable = ({
   columns,
   operatingButton,
-  onConfirm,
   listApi
 }: {
-  columns: Array<columsType>;
+  columns: Array<columnsType>;
   operatingButton: Array<OperatingButtonType>;
-  onConfirm: Function;
   listApi: (data: listParameterType) => Promise<unknown>;
 }) => {
   type formDataType = {
@@ -42,12 +39,14 @@ const SearchableTable = ({
     title: (val: { [key: string]: string }) => ReactNode | string;
     description: (val: { [key: string]: string }) => ReactNode | string;
     onClickType: string;
+    onConfirm: (val: { [key: string]: string }) => Promise<boolean | string>;
   };
   const [searchTerm, setSearchTerm] = useState('');
   const [formConfig, setFormConfig] = useState({} as formDataType);
   const [formValues, setFormValues] = useState({});
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   const {
     pageNum,
@@ -80,12 +79,14 @@ const SearchableTable = ({
     onClickType,
     fields,
     dialogTitle,
-    dialogDescription
+    dialogDescription,
+    onConfirm
   }: {
     onClickType: string;
     fields?: any;
     dialogTitle: (val: { [key: string]: string }) => ReactNode | string;
     dialogDescription: (val: { [key: string]: string }) => ReactNode | string;
+    onConfirm: (val: { [key: string]: string }) => Promise<boolean | string>;
   }) => {
     // identificationFun(onClickType);
     onOpen();
@@ -93,16 +94,27 @@ const SearchableTable = ({
       formList: fields,
       title: dialogTitle,
       description: dialogDescription,
-      onClickType: onClickType
+      onClickType: onClickType,
+      onConfirm: onConfirm
     };
     console.log(formData, 'formData');
 
     setFormConfig(formData);
   };
 
-  const onConfirmFun = async (val: { [key: string]: string }, type: string) => {
-    const isSucces = await onConfirm(val, type);
-    if (isSucces) await mutate(1);
+  const onConfirmFun = async (
+    val: { [key: string]: string },
+    onConfirm: (val: { [key: string]: string }) => Promise<boolean | string>
+  ) => {
+    const isSuccess = await onConfirm(val);
+    if (isSuccess === true) {
+      await mutate(1);
+    }
+    toast({
+      title: isSuccess === true ? formConfig.title + '成功' : isSuccess,
+      status: isSuccess === true ? 'success' : 'warning'
+    });
+    return isSuccess;
   };
 
   return (
@@ -115,7 +127,7 @@ const SearchableTable = ({
         onClose={onClose}
         description={formConfig.description}
         title={formConfig.title}
-        onConfirm={onConfirmFun}
+        onConfirm={(val) => onConfirmFun(val, formConfig.onConfirm)}
       />
 
       <Flex w={'100%'} display="flex" justifyContent={'space-between'}>
@@ -182,7 +194,7 @@ const SearchableTable = ({
             {data?.map((item, index) => (
               <Tr key={index}>
                 {Object.values(columns).map((value, index) => (
-                  <Td key={index}>{item[value.name]}</Td>
+                  <Td key={index}> {value.render ? value.render(item) : item[value.name]}</Td>
                 ))}
                 <Td>
                   {operatingButton.map((btnItem, btnindex) =>
@@ -211,7 +223,7 @@ const SearchableTable = ({
         <Text>No results found</Text>
       )}
 
-      <Box>
+      <Box mt={4}>
         <Pagination />
       </Box>
     </Box>

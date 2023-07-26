@@ -80,6 +80,7 @@ export const useUserStore = create<State>()(
           if (get().myModels.length > 0 && !init) return null;
           const res = await getMyModels();
           set((state) => {
+            console.log(res);
             state.myModels = res.myModels;
             state.myCollectionModels = res.myCollectionModels;
           });
