@@ -18,6 +18,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       themeChoices,
       'themeChoices----------------------------------------------------------------'
     );
+
+    const themeList: any = []
+    themeChoices.forEach(theme => {
+      themeList.push({_id: theme})
+    })
+
+    console.log(
+      themeList,
+      'themeList----------------------------------------------------------------'
+    );
     // 凭证校验
     const { userId } = await authUser({ req, authToken: true });
 
@@ -27,7 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     response = await ExamPaper.create({
       name,
       categoryId,
-      themeChoices,
+      themeChoices: themeList,
       level,
       score: 0,
       isDeleted: false,
@@ -38,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const questionList: any[] = [];
 
     const promiseList: any[] = [];
-    themeChoices.forEach((item) => {
+    themeList.forEach((item: any) => {
       const requestPromise = ExamQuestion.find(
         {
           categoryId,
