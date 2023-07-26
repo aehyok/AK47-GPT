@@ -32,6 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (keyword) {
       where = {
+        ...where,
         name: {
             // $regex: `/${keyword}/i`
             $regex: new RegExp(keyword, 'ig')
