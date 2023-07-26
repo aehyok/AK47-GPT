@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     await connectToDatabase();
 
-    let where: any = {};
+    let where: any = { isDelete: false};
 
     if (keyword) {
       where = {
