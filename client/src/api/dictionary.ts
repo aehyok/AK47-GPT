@@ -1,9 +1,5 @@
 import { GET, POST, PUT } from './request';
-
-type listParameterType = {
-  limit: number;
-  page: number;
-};
+import { listParameterType } from '@/types/request';
 
 /**
  * 字典分组

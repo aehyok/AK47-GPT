@@ -4,6 +4,8 @@ import SearchableTable from '../../hooks/useTable';
 // import { COLUMNS, data } from '@/constants/company';
 import { Heading } from '@chakra-ui/react';
 import { useCompanyConfig } from './config';
+import { getDictionaryList } from '@/api/dictionary';
+
 const Company = () => {
   const { tableData, operatingButton, onConfirm, COLUMNS } = useCompanyConfig();
 
@@ -20,6 +22,7 @@ const Company = () => {
       <Box flex={1} h={'100%'} position={'relative'} m={5}>
         {/* <CompanyTable /> */}
         <SearchableTable
+          listApi={getDictionaryList}
           columns={COLUMNS}
           operatingButton={operatingButton}
           onConfirm={onConfirm}
