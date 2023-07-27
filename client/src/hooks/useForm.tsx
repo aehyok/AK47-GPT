@@ -6,13 +6,19 @@ import {
   FormHelperText,
   Input,
   Textarea,
-  Select,
   Checkbox,
   Button,
   VStack,
   HStack,
   Box
 } from '@chakra-ui/react';
+import { Select } from 'chakra-react-select';
+import { columnsType } from '@/types/index.d';
+
+interface Option {
+  label: string;
+  value: string;
+}
 
 const Form = ({
   fields,
@@ -21,25 +27,45 @@ const Form = ({
   type,
   onClose
 }: {
-  fields: any;
-  onSubmit: (formValues: { [key: string]: string }, type: string) => void;
+  fields: columnsType[];
+  onSubmit: (formValues: { [key: string]: string }, type: string) => Promise<boolean | string>;
   formData: { [key: string]: string };
   type: string;
   onClose: () => void;
 }) => {
-  const [formValues, setFormValues] = useState({});
+  const [formValues, setFormValues] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
+
+  const handleSelectChange = (options: Option[] | Option, field: columnsType) => {
+    setFormValues({ ...formValues, [field.name]: options });
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
-    await onSubmit(formValues, type);
+    const submitForm = getSubmitFormData();
+    const isSuccess = await onSubmit(submitForm, type);
     setIsLoading(false);
-    onClose();
+    isSuccess === true && onClose();
+  };
+
+  const getSubmitFormData = () => {
+    const selectFieldNames = fields
+      .filter((field) => field.valueType === 'select')
+      .map((field) => field.name);
+    let submitForm = { ...formValues };
+    selectFieldNames.forEach((name) => {
+      const submitSelectValue = Array.isArray(formValues[name])
+        ? formValues[name].map((option: Option) => option.value)
+        : formValues[name].value;
+      submitForm[name] = submitSelectValue;
+    });
+    return submitForm;
   };
 
   // setFormValues(formData)
@@ -48,59 +74,68 @@ const Form = ({
     setFormValues(formData);
   }, []);
 
+  const generateComponent = (field: columnsType) => {
+    const components = {
+      textarea: {
+        component: Textarea,
+        props: { name: field.name, value: formValues[field.name] || '', onChange: handleChange }
+      },
+      select: {
+        component: Select,
+        props: {
+          name: field.name,
+          placeholder: '请选择',
+          value: formValues[field.name] || '',
+          onChange: (options: Option[] | Option) => handleSelectChange(options, field),
+          options: field.options
+        }
+      },
+      checkbox: {
+        component: Checkbox,
+        props: {
+          name: field.name,
+          isChecked: formValues[field.name] || false,
+          onChange: handleChange
+        }
+      },
+      text: {
+        component: Input,
+        props: {
+          type: field.valueType,
+          name: field.name,
+          value: formValues[field.name] || '',
+          onChange: handleChange
+        }
+      }
+    };
+
+    if (!field.valueType) return '';
+    const ComponentToRender = components[field.valueType].component;
+    const componentProps = { ...components[field.valueType].props, ...field.formItemProps };
+    // @ts-ignore
+    return <ComponentToRender {...componentProps} />;
+  };
+
   return (
     <Box as="form" onSubmit={handleSubmit}>
       <VStack spacing={4} align="stretch">
-        {fields.map((field: Record<string, any>) => (
-          <FormControl
-            key={field.name}
-            id={field.name}
-            isRequired={field.required}
-            isInvalid={field.error}
-          >
-            <FormLabel>{field.label}</FormLabel>
-            {field.type === 'textarea' ? (
-              <Textarea
-                name={field.name}
-                // @ts-ignore
-                value={formValues[field.name] || ''}
-                onChange={handleChange}
-              />
-            ) : field.type === 'select' ? (
-              <Select
-                name={field.name}
-                // @ts-ignore
-                value={formValues[field.name] || ''}
-                onChange={handleChange}
-              >
-                {field.options.map((option: Record<string, any>) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </Select>
-            ) : field.type === 'checkbox' ? (
-              <Checkbox
-                name={field.name}
-                // @ts-ignore
-                isChecked={formValues[field.name] || false}
-                onChange={handleChange}
-              >
-                {field.label}
-              </Checkbox>
-            ) : (
-              <Input
-                type={field.type}
-                name={field.name}
-                // @ts-ignore
-                value={formValues[field.name] || ''}
-                onChange={handleChange}
-              />
-            )}
-            <FormErrorMessage>{field.error}</FormErrorMessage>
-            <FormHelperText>{field.helperText}</FormHelperText>
-          </FormControl>
-        ))}
+        {fields.map((field: columnsType) =>
+          field.hideInForm ? (
+            ''
+          ) : (
+            <FormControl
+              key={field.name}
+              id={field.name}
+              isRequired={field.required}
+              isInvalid={field.error}
+            >
+              <FormLabel>{field.label}</FormLabel>
+              {generateComponent(field)}
+              <FormErrorMessage>{field.error}</FormErrorMessage>
+              <FormHelperText>{field.helperText}</FormHelperText>
+            </FormControl>
+          )
+        )}
         <HStack display="flex" justifyContent={'flex-end'}>
           <Box mb="10px">
             <Button type="reset" onClick={() => setFormValues({})} mr="10px">

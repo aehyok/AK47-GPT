@@ -30,7 +30,7 @@ const AlertDialogForm = ({
   confirmButtonText?: string;
   cancelButtonText?: string;
   title: (val: { [key: string]: string }) => ReactNode | string;
-  onConfirm: (val: { [key: string]: string }, type: string) => Promise<void>;
+  onConfirm: (val: { [key: string]: string }, type: string) => Promise<boolean | string>;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const cancelRef = React.useRef() as RefObject<any>;

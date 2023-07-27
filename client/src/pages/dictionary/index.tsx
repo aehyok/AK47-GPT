@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import SearchableTable from '../../hooks/useTable';
-// import { COLUMNS, data } from '@/constants/company';
 import { Heading } from '@chakra-ui/react';
 import { useCompanyConfig } from './config';
 import { getDictionaryList } from '@/api/dictionary';
 
 const Company = () => {
-  const { tableData, operatingButton, onConfirm, COLUMNS } = useCompanyConfig();
+  const { operatingButton, COLUMNS } = useCompanyConfig();
 
   useEffect(() => {}, []);
   return (
@@ -25,7 +24,6 @@ const Company = () => {
           listApi={getDictionaryList}
           columns={COLUMNS}
           operatingButton={operatingButton}
-          onConfirm={onConfirm}
         />
         {/* {modelId && <ModelDetail modelId={modelId} isPc={isPc} />} */}
       </Box>

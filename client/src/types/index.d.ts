@@ -1,7 +1,14 @@
+import { Response } from './../pages/api/openapi/v1/chat/getHistory';
 import type { Mongoose } from 'mongoose';
 import type { Agent } from 'http';
 import type { Pool } from 'pg';
 import type { Tiktoken } from '@dqbd/tiktoken';
+
+export type ResponseType<T> = {
+  code: number;
+  statusText: string;
+  data: PagingData<T>;
+};
 
 export type PagingData<T> = {
   pageNum: number;
@@ -44,7 +51,15 @@ export type OperatingButtonType = {
   render?: (...args: any[]) => string;
 };
 
-export type columsType = {
+export type columnsType = {
   name: string;
   label: string;
+  valueType?: 'text' | 'select' | 'textarea' | 'checkbox';
+  required?: boolean;
+  render?: (record: any) => ReactNode;
+  options?: { label: string; value: string }[];
+  hideInForm?: boolean;
+  error?: boolean;
+  helperText?: string;
+  formItemProps?: Record<string, any>;
 };

@@ -6,3 +6,11 @@ export interface PaperListResponse {
   score: number;
   themeChoices: { _id: string }[];
 }
+
+export interface PaperParams {
+  _id?: string;
+  name: string;
+  level: string;
+  categoryId: string;
+  themeChoices: string[];
+}

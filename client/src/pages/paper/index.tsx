@@ -1,16 +1,21 @@
-import { Card, Flex, Button, CardHeader, Heading } from '@chakra-ui/react';
-import HistoryTable from './components/HistoryTable';
+import { Card, CardHeader, Heading } from '@chakra-ui/react';
+import { useTableConfig } from './config';
+import SearchableTable from '@/hooks/useTable';
+import { getPaperListApi } from '@/api/paper';
 
 const Paper = () => {
+  const { operatingButton, COLUMNS } = useTableConfig();
+
   return (
     <Card m={4} px={[3, 6]} py={4}>
-      <Flex justifyContent={'flex-end'} mb={'4'}>
-        <Button>开始考试</Button>
-      </Flex>
-      <CardHeader>
-        <Heading size="md">考卷历史</Heading>
+      <CardHeader px={0}>
+        <Heading size="lg">考卷管理</Heading>
       </CardHeader>
-      <HistoryTable></HistoryTable>
+      <SearchableTable
+        listApi={getPaperListApi}
+        columns={COLUMNS}
+        operatingButton={operatingButton}
+      />
     </Card>
   );
 };

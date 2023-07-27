@@ -5,24 +5,27 @@ import { getDictionaryItemListApi } from '@/api/dictionary/item';
 import { DictionaryType } from '@/api/response/dictionary.d';
 
 type State = {
+  dictionaryList: DictionaryType[];
   dictionary: {
     level: DictionaryType[];
     themeType: DictionaryType[];
     questionType: DictionaryType[];
   };
   initDictionary: (groupCode?: 'themeType' | 'questionType' | 'level') => Promise<void>;
-  getDictionary: (
-    groupCode?: 'themeType' | 'questionType' | 'level'
-  ) => DictionaryType[] | State['dictionary'];
+  getDictionaryAndOption: (groupCode?: 'themeType' | 'questionType' | 'level') => {
+    dictionary: DictionaryType[] | State['dictionary'];
+    options: { label: string; value: string }[];
+  };
   getDictionaryItemName: (
-    groupCode: 'themeType' | 'questionType' | 'level',
-    code: string | string[]
+    groupCode?: 'themeType' | 'questionType' | 'level',
+    id?: string | string[]
   ) => string | undefined;
 };
 
 export const useDictionaryStore = create<State>()(
   devtools(
     immer((set, get) => ({
+      dictionaryList: [],
       dictionary: {
         level: [],
         themeType: [],
@@ -32,14 +35,23 @@ export const useDictionaryStore = create<State>()(
         try {
           const res = await getDictionaryItemListApi(groupCode);
           set((state) => {
-            res.forEach((item) => state.dictionary[item.groupCode].push(item));
+            res.data.forEach((item) => {
+              state.dictionaryList.push(item);
+              state.dictionary[item.groupCode].push(item);
+            });
           });
         } catch (error) {}
       },
-      getDictionary(groupCode) {
-        return groupCode ? get().dictionary[groupCode] : get().dictionary;
+      getDictionaryAndOption(groupCode) {
+        const dictionary = groupCode ? get().dictionary[groupCode] : get().dictionary;
+        const dictionaryList = groupCode ? get().dictionary[groupCode] : get().dictionaryList;
+        return {
+          dictionary,
+          options: dictionaryList.map((item) => ({ label: item.name, value: item._id }))
+        };
       },
       getDictionaryItemName(groupCode, id) {
+        if (!groupCode || !id) return undefined;
         const dictionary = get().dictionary[groupCode];
         if (typeof id === 'string') {
           const item = dictionary.find((item) => item._id === id);
