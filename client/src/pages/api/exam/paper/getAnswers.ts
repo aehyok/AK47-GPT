@@ -21,7 +21,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       throw new Error('参数错误');
     }
 
-    
     const data = await ExamPaper.find(
       {
         paperId
