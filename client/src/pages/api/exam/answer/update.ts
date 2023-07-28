@@ -28,9 +28,8 @@ async function gptTranslate(
                   面试者的回答：${answerContent}`;
   const chatCompletion = await chatApi.createChatCompletion({
     model: 'gpt-3.5-turbo-16k',
-    temperature: 0,
+    temperature: 0.6,
     messages: [{ role: 'user', content: `${prompt}` }],
-    function_call: "auto",
     functions: [
       {
         name: "write_evaluation_Info_db",
@@ -52,6 +51,7 @@ async function gptTranslate(
       }
     ],
   });
+  console.log(chatCompletion.data, '-000000000000000000-------------chatCompletion')
   console.log(chatCompletion.data.choices[0].message, 'chatCompletion')
   return chatCompletion.data.choices[0].message?.function_call?.arguments;
 }
