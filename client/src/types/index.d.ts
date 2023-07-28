@@ -4,10 +4,16 @@ import type { Agent } from 'http';
 import type { Pool } from 'pg';
 import type { Tiktoken } from '@dqbd/tiktoken';
 
-export type ResponseType<T> = {
+export type ResponsePagingType<T> = {
   code: number;
   statusText: string;
   data: PagingData<T>;
+};
+
+export type ResponseType<T> = {
+  code: number;
+  statusText: string;
+  data: T;
 };
 
 export type PagingData<T> = {
@@ -48,6 +54,7 @@ export type OperatingButtonType = {
   fields?: AddEditformType[];
   dialogTitle?: ((val: { [key: string]: string }) => ReactNode) | string;
   dialogDescription?: ((val: { [key: string]: string }) => ReactNode) | string;
+  isVisible?: (record: any) => boolean;
   render?: (...args: any[]) => string;
 };
 

@@ -14,3 +14,16 @@ export interface PaperParams {
   categoryId: string;
   themeChoices: string[];
 }
+
+export interface PaperAnswerUpdateParams {
+  paperId: string;
+  questionId: string;
+  answerContent: string;
+  questionNumber: number;
+}
+
+export interface PaperQuestionListResponse {
+  isAnswered: boolean;
+  question: string;
+  _id: string;
+}

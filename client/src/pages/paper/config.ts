@@ -3,8 +3,10 @@ import { useDictionaryStore } from '@/store/dictionary';
 import { columnsType } from '@/types/index.d';
 import { createPaperApi, deletePaperApi } from '@/api/paper';
 import { AxiosError } from 'axios';
+import { useRouter } from 'next/router';
 
 export function useTableConfig() {
+  const router = useRouter();
   const { getDictionaryItemName, getDictionaryAndOption } = useDictionaryStore();
 
   const COLUMNS: Array<columnsType> = [
@@ -79,8 +81,22 @@ export function useTableConfig() {
       onClickType: 'proceed',
       dialogTitle: '进行考卷',
       dialogDescription: '是否进行该考卷',
-      onConfirm: (val: PaperParams) => {
-        console.log(val);
+      isVisible: (record: PaperListResponse) => record.score === 0,
+      onConfirm: async (val: PaperParams) => {
+        router.push({ pathname: '/paper/exam', query: { id: val._id, name: val.name } });
+        return false;
+      }
+    },
+    {
+      type: 'end',
+      name: '查看考卷',
+      onClickType: 'proceed',
+      dialogTitle: '查看考卷',
+      dialogDescription: '是否查看考卷',
+      isVisible: (record: PaperListResponse) => record.score > 0,
+      onConfirm: async (val: PaperParams) => {
+        router.push({ pathname: '/paper/result', query: { id: val._id, name: val.name } });
+        return false;
       }
     },
     {

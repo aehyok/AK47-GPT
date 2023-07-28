@@ -48,7 +48,7 @@ const Navbar = ({ unread }: { unread: number }) => {
         label: '考卷',
         icon: 'paper',
         link: '/paper',
-        activeLink: ['/paper']
+        activeLink: ['/paper', '/paper/exam']
       },
       {
         label: '账号',

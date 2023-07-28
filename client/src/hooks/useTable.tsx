@@ -110,11 +110,36 @@ const SearchableTable = ({
     if (isSuccess === true) {
       await mutate(1);
     }
-    toast({
-      title: isSuccess === true ? formConfig.title + '成功' : isSuccess,
-      status: isSuccess === true ? 'success' : 'warning'
-    });
+    if (isSuccess !== false) {
+      toast({
+        title: isSuccess === true ? formConfig.title + '成功' : isSuccess,
+        status: isSuccess === true ? 'success' : 'warning'
+      });
+    }
     return isSuccess;
+  };
+
+  const OperatingButtonView = (option: OperatingButtonType, index: number, record: any) => {
+    const isVisible =
+      option.type === 'end' &&
+      (!option.isVisible || (option.isVisible && option.isVisible(record)));
+    if (!isVisible) return '';
+    return (
+      <Button
+        paddingInlineStart={'0px'}
+        paddingInlineEnd={'0px'}
+        pr={'20px'}
+        variant="ghost"
+        onClick={() => {
+          setFormValues(record), btnClick(option);
+        }}
+        disabled={!searchTerm}
+        colorScheme="blue"
+        key={index}
+      >
+        {option.render ? option.render(record) : option.name}
+      </Button>
+    );
   };
 
   return (
@@ -197,22 +222,8 @@ const SearchableTable = ({
                   <Td key={index}> {value.render ? value.render(item) : item[value.name]}</Td>
                 ))}
                 <Td>
-                  {operatingButton.map((btnItem, btnindex) =>
-                    btnItem.type !== 'head' ? (
-                      <Button
-                        variant="ghost"
-                        onClick={() => {
-                          setFormValues(item), btnClick(btnItem);
-                        }}
-                        disabled={!searchTerm}
-                        colorScheme="blue"
-                        key={btnindex}
-                      >
-                        {btnItem.render ? btnItem.render(item) : btnItem.name}
-                      </Button>
-                    ) : (
-                      ''
-                    )
+                  {operatingButton.map((btnItem, btnIndex) =>
+                    OperatingButtonView(btnItem, btnIndex, item)
                   )}
                 </Td>
               </Tr>
