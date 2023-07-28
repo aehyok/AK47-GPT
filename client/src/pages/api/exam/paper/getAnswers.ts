@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const data = await ExamPaper.find(
       {
-        paperId
+        "_id":paperId
       }, '_id name level categoryId themeChoices score remark')
 
     const answers = await ExamAnswer.find({
