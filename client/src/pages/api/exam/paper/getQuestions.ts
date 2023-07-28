@@ -37,10 +37,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     result.forEach((item: any) => {
       console.log(item._id, item._id.toString(), "----------------", "1")
       const current: any = questionList.find(question => question.questionId.toString() === item._id.toString())
-      console.log( current, 'item-current')
       if(current && current.score >= 0) {
         item.score = current.score
-        console.log(item, 'item-score')
       }
       newResult.push({
         _id: item._id,
