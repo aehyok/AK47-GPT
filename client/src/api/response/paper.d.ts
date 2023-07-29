@@ -25,5 +25,22 @@ export interface PaperAnswerUpdateParams {
 export interface PaperQuestionListResponse {
   isAnswered: boolean;
   question: string;
+  answerContent?: string;
+  answer?: string;
+  gptContent?: string;
+  score?: number;
   _id: string;
+}
+
+export interface PaperPaperInfoResponse {
+  categoryId: string;
+  level: string;
+  name: string;
+  score: number;
+  themeChoices: { _id: string }[];
+}
+
+export interface PaperAnswersResponse {
+  answerList: PaperQuestionListResponse[];
+  paperInfo: PaperPaperInfoResponse[];
 }

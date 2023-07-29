@@ -3,7 +3,8 @@ import type {
   PaperListResponse,
   PaperParams,
   PaperQuestionListResponse,
-  PaperAnswerUpdateParams
+  PaperAnswerUpdateParams,
+  PaperAnswersResponse
 } from '@/api/response/paper';
 import type { ResponsePagingType, ResponseType } from '@/types/index.d';
 import { listParameterType } from '@/types/request';
@@ -48,4 +49,4 @@ export const postAnswerUpdateApi = (data: PaperAnswerUpdateParams) =>
  * @Desc 获取试卷考题答案
  */
 export const getAnswersApi = (data: { paperId: string | undefined }) =>
-  POST<ResponseType<{ answerList: PaperQuestionListResponse[] }>>('/exam/paper/getAnswers', data);
+  POST<ResponseType<PaperAnswersResponse>>('/exam/paper/getAnswers', data);

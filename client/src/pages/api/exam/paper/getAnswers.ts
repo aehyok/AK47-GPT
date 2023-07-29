@@ -32,6 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     let ids = answers.map((item) => item.questionId);
     const questionList = await ExamQuestion.find({ _id: { $in: ids } });
+    // console.log(answers)
 
     const newAnswers: any = [];
     answers.forEach((item: any) => {
@@ -39,6 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         (question) => question._id.toString() === item.questionId.toString()
       );
       item.question = current.question;
+      item.answer = current.answer;
       newAnswers.push({
         _id: item._id,
         question: item.question,
@@ -48,7 +50,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         isDeleted: item.isDeleted,
         paperId: item.paperId,
         questionId: item.questionId,
-        score: item.score
+        score: item.score,
+        answer: item.answer
       });
     });
 
