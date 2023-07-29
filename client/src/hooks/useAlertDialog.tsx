@@ -8,7 +8,7 @@ import {
   AlertDialogOverlay,
   Button
 } from '@chakra-ui/react';
-import Form from './useForm';
+import Form from './useForm2';
 const AlertDialogForm = ({
   onClickType,
   formValues,

@@ -8,25 +8,26 @@ export function useCompanyConfig() {
       name: 'name',
       label: '名称',
       valueType: 'text',
-      required: true
-    },
-    {
-      name: 'code',
-      label: '编码',
-      valueType: 'text',
-      required: true
-    },
-    {
-      name: 'order',
-      label: '排序',
-      valueType: 'text',
-      required: true
-    },
-    {
-      name: 'remark',
-      label: '备注',
-      valueType: 'text'
+      error: true
+      // required: true
     }
+    // {
+    //   name: 'code',
+    //   label: '编码',
+    //   valueType: 'text',
+    //   required: true
+    // },
+    // {
+    //   name: 'order',
+    //   label: '排序',
+    //   valueType: 'text',
+    //   required: true
+    // },
+    // {
+    //   name: 'remark',
+    //   label: '备注',
+    //   valueType: 'text'
+    // }
   ];
 
   const operatingButton = [
@@ -38,7 +39,7 @@ export function useCompanyConfig() {
       dialogTitle: '添加字典',
       onConfirm: async (val: { [key: string]: any }) => {
         try {
-          await saveDictionaryData({ ...val });
+          // await saveDictionaryData({ ...val });
           return true;
         } catch (error) {
           return (error as AxiosError).message;
