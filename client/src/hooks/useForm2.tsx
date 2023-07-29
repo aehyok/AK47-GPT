@@ -37,7 +37,11 @@ const Form = ({
 }) => {
   const [formValues, setFormValues] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
-  const { handleSubmit, control, formState } = useForm();
+  const {
+    handleSubmit,
+    control,
+    formState: { errors }
+  } = useForm();
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -81,7 +85,9 @@ const Form = ({
     setFormValues(formData);
   }, []);
 
-  const generateComponent = (field: columnsType) => {
+  const generateComponent = (field: columnsType, fields) => {
+    console.log(fields, 'fieldsaasdhasuidhsa');
+
     const components = {
       textarea: {
         component: Textarea,
@@ -111,7 +117,8 @@ const Form = ({
           type: field.valueType,
           name: field.name,
           value: formValues[field.name] || '',
-          onChange: handleChange
+          onChange: handleChange,
+          ...fields
         }
       }
     };
@@ -119,11 +126,13 @@ const Form = ({
     if (!field.valueType) return '';
     const ComponentToRender = components[field.valueType].component;
     const componentProps = { ...components[field.valueType].props, ...field.formItemProps };
+    console.log(componentProps, '你是什么的');
+
     // @ts-ignore
     return <ComponentToRender {...componentProps} />;
   };
   const Ava = () => {
-    console.log('你是啥', formState, control);
+    console.log('你是啥', control);
   };
   return (
     <form onSubmit={handleSubmit(onSubmitForm)}>
@@ -136,7 +145,7 @@ const Form = ({
               key={field.name}
               id={field.name}
               isRequired={field.required}
-              isInvalid={true}
+              isInvalid={errors.name}
             >
               <FormLabel htmlFor="name">{field.label}</FormLabel>
               {/* {generateComponent(field)} */}
@@ -153,11 +162,22 @@ const Form = ({
                 name="name"
                 control={control}
                 defaultValue=""
-                rules={{ required: 'name is required' }}
-                render={({ fields }) => <Input {...fields} />}
+                rules={{
+                  required: 'name is required',
+                  pattern: {
+                    value: /^1[3456789]\d{9}$/,
+                    message: '手机号错误'
+                  }
+                }}
+                // render={({ field }) => {
+                //   console.log(field, "field");
+
+                //   return <Input type="text" {...field} />
+                // }}
+                render={({ field: fields }) => generateComponent(field, fields)}
               />
 
-              <FormErrorMessage>"shadiksahi" </FormErrorMessage>
+              <FormErrorMessage> {errors?.name && errors.name.message}</FormErrorMessage>
               <FormHelperText>{field.helperText}</FormHelperText>
             </FormControl>
           )
