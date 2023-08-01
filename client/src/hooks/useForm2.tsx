@@ -10,6 +10,7 @@ import {
   Button,
   VStack,
   HStack,
+  // Select,
   Box
 } from '@chakra-ui/react';
 import { useForm, Controller } from 'react-hook-form';
@@ -53,14 +54,12 @@ const Form = ({
   };
 
   const onSubmitForm = async (e: any) => {
-    // e.preventDefault();
-    console.log(errors, '你是啊啥');
-
+    e.preventDefault();
     setIsLoading(true);
     const submitForm = getSubmitFormData();
     const isSuccess = await onSubmit(submitForm, type);
     setIsLoading(false);
-    // isSuccess === true && onClose();
+    isSuccess === true && onClose();
   };
 
   const getSubmitFormData = () => {
@@ -85,13 +84,18 @@ const Form = ({
     setFormValues(formData);
   }, []);
 
-  const generateComponent = (field: columnsType, fields) => {
-    console.log(fields, 'fieldsaasdhasuidhsa');
+  const generateComponent = (field: columnsType, refField: any) => {
+    console.log(refField, 'fieldsaasdhasuidhsa');
 
     const components = {
       textarea: {
         component: Textarea,
-        props: { name: field.name, value: formValues[field.name] || '', onChange: handleChange }
+        props: {
+          name: field.name,
+          value: formValues[field.name] || '',
+          onChange: handleChange,
+          ...refField
+        }
       },
       select: {
         component: Select,
@@ -100,7 +104,8 @@ const Form = ({
           placeholder: '请选择',
           value: formValues[field.name] || '',
           onChange: (options: Option[] | Option) => handleSelectChange(options, field),
-          options: field.options
+          options: field.options,
+          ...refField
         }
       },
       checkbox: {
@@ -108,7 +113,8 @@ const Form = ({
         props: {
           name: field.name,
           isChecked: formValues[field.name] || false,
-          onChange: handleChange
+          onChange: handleChange,
+          ...refField
         }
       },
       text: {
@@ -118,22 +124,20 @@ const Form = ({
           name: field.name,
           value: formValues[field.name] || '',
           onChange: handleChange,
-          ...fields
+          ...refField
         }
       }
     };
 
-    if (!field.valueType) return '';
+    if (!field.valueType) return <div></div>;
     const ComponentToRender = components[field.valueType].component;
     const componentProps = { ...components[field.valueType].props, ...field.formItemProps };
-    console.log(componentProps, '你是什么的');
+    // console.log(componentProps, '你是什么的');
 
     // @ts-ignore
     return <ComponentToRender {...componentProps} />;
   };
-  const Ava = () => {
-    console.log('你是啥', control);
-  };
+
   return (
     <form onSubmit={handleSubmit(onSubmitForm)}>
       <VStack spacing={4} align="stretch">
@@ -145,7 +149,7 @@ const Form = ({
               key={field.name}
               id={field.name}
               isRequired={field.required}
-              isInvalid={errors.name}
+              isInvalid={errors[field.name]}
             >
               <FormLabel htmlFor="name">{field.label}</FormLabel>
               {/* {generateComponent(field)} */}
@@ -159,25 +163,20 @@ const Form = ({
               /> */}
 
               <Controller
-                name="name"
+                name={field.name}
                 control={control}
                 defaultValue=""
                 rules={{
-                  required: 'name is required',
-                  pattern: {
-                    value: /^1[3456789]\d{9}$/,
-                    message: '手机号错误'
-                  }
+                  required: field.required ? `请选择${field.label}` : false,
+                  ...field.rules
                 }}
-                // render={({ field }) => {
-                //   console.log(field, "field");
-
-                //   return <Input type="text" {...field} />
-                // }}
-                render={({ field: fields }) => generateComponent(field, fields)}
+                render={({ field: refField }) => generateComponent(field, refField)}
               />
 
-              <FormErrorMessage> {errors?.name && errors.name.message}</FormErrorMessage>
+              <FormErrorMessage>
+                {(errors[field.name] && errors[field.name]!.message) as string}
+                {/* {errors.code && errors.code.message} */}
+              </FormErrorMessage>
               <FormHelperText>{field.helperText}</FormHelperText>
             </FormControl>
           )
@@ -186,9 +185,6 @@ const Form = ({
           <Box mb="10px">
             <Button type="reset" onClick={() => setFormValues({})} mr="10px">
               清空
-            </Button>
-            <Button type="reset" onClick={() => Ava()} mr="10px">
-              清空222
             </Button>
             <Button type="submit" colorScheme="red" isLoading={isLoading}>
               确定

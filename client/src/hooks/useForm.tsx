@@ -10,8 +10,11 @@ import {
   Button,
   VStack,
   HStack,
+  // Select,
   Box
 } from '@chakra-ui/react';
+import { useForm, Controller } from 'react-hook-form';
+
 import { Select } from 'chakra-react-select';
 import { columnsType } from '@/types/index.d';
 
@@ -35,6 +38,11 @@ const Form = ({
 }) => {
   const [formValues, setFormValues] = useState<any>({});
   const [isLoading, setIsLoading] = useState(false);
+  const {
+    handleSubmit,
+    control,
+    formState: { errors }
+  } = useForm();
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -45,7 +53,7 @@ const Form = ({
     setFormValues({ ...formValues, [field.name]: options });
   };
 
-  const handleSubmit = async (e: any) => {
+  const onSubmitForm = async (e: any) => {
     e.preventDefault();
     setIsLoading(true);
     const submitForm = getSubmitFormData();
@@ -65,6 +73,8 @@ const Form = ({
         : formValues[name].value;
       submitForm[name] = submitSelectValue;
     });
+    console.log(submitForm, 'submitForm');
+
     return submitForm;
   };
 
@@ -74,11 +84,18 @@ const Form = ({
     setFormValues(formData);
   }, []);
 
-  const generateComponent = (field: columnsType) => {
+  const generateComponent = (field: columnsType, refField: any) => {
+    console.log(refField, 'fieldsaasdhasuidhsa');
+
     const components = {
       textarea: {
         component: Textarea,
-        props: { name: field.name, value: formValues[field.name] || '', onChange: handleChange }
+        props: {
+          name: field.name,
+          value: formValues[field.name] || '',
+          onChange: handleChange,
+          ...refField
+        }
       },
       select: {
         component: Select,
@@ -87,7 +104,8 @@ const Form = ({
           placeholder: '请选择',
           value: formValues[field.name] || '',
           onChange: (options: Option[] | Option) => handleSelectChange(options, field),
-          options: field.options
+          options: field.options,
+          ...refField
         }
       },
       checkbox: {
@@ -95,7 +113,8 @@ const Form = ({
         props: {
           name: field.name,
           isChecked: formValues[field.name] || false,
-          onChange: handleChange
+          onChange: handleChange,
+          ...refField
         }
       },
       text: {
@@ -104,20 +123,23 @@ const Form = ({
           type: field.valueType,
           name: field.name,
           value: formValues[field.name] || '',
-          onChange: handleChange
+          onChange: handleChange,
+          ...refField
         }
       }
     };
 
-    if (!field.valueType) return '';
+    if (!field.valueType) return <div></div>;
     const ComponentToRender = components[field.valueType].component;
     const componentProps = { ...components[field.valueType].props, ...field.formItemProps };
+    // console.log(componentProps, '你是什么的');
+
     // @ts-ignore
     return <ComponentToRender {...componentProps} />;
   };
 
   return (
-    <Box as="form" onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmitForm)}>
       <VStack spacing={4} align="stretch">
         {fields.map((field: columnsType) =>
           field.hideInForm ? (
@@ -127,11 +149,34 @@ const Form = ({
               key={field.name}
               id={field.name}
               isRequired={field.required}
-              isInvalid={field.error}
+              isInvalid={errors[field.name]}
             >
-              <FormLabel>{field.label}</FormLabel>
-              {generateComponent(field)}
-              <FormErrorMessage>{field.error}</FormErrorMessage>
+              <FormLabel htmlFor="name">{field.label}</FormLabel>
+              {/* {generateComponent(field)} */}
+
+              {/* <Controller
+                name="name"
+                control={control}
+                defaultValue=""
+                rules={{ required: 'name is required' }}
+                render={() => generateComponent(field)}
+              /> */}
+
+              <Controller
+                name={field.name}
+                control={control}
+                defaultValue=""
+                rules={{
+                  required: field.required ? `请选择${field.label}` : false,
+                  ...field.rules
+                }}
+                render={({ field: refField }) => generateComponent(field, refField)}
+              />
+
+              <FormErrorMessage>
+                {(errors[field.name] && errors[field.name]!.message) as string}
+                {/* {errors.code && errors.code.message} */}
+              </FormErrorMessage>
               <FormHelperText>{field.helperText}</FormHelperText>
             </FormControl>
           )
@@ -147,7 +192,7 @@ const Form = ({
           </Box>
         </HStack>
       </VStack>
-    </Box>
+    </form>
   );
 };
 
