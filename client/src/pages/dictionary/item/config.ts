@@ -1,48 +1,49 @@
-import type { PaperListResponse, PaperParams } from '@/api/response/question';
-import { deleteQuestionData, saveQuestionData, enableQuestionData } from '@/api/question';
-import { formatDate } from '@/utils/dateFormat';
+import {
+  deleteDictionaryItemData,
+  saveDictionaryItem,
+  enableDictionaryItemData
+} from '@/api/dictionary';
 import { columnsType } from '@/types/index.d';
 import { AxiosError } from 'axios';
 
-export function useCompanyConfig() {
+export function useDictionaryItemConfig(parameter: Record<string, any>) {
   const COLUMNS: Array<columnsType> = [
     {
-      name: 'question',
-      label: '问题',
-      valueType: 'textarea',
-      required: true
-    },
-    {
-      name: 'answer',
-      label: '答案',
-      valueType: 'textarea',
-      required: true
-    },
-    {
-      name: 'createdAt',
-      label: '创建时间',
-      hideInForm: true,
-      render: (record: PaperListResponse) => {
-        return formatDate(record.createdAt);
-      }
-    },
-    {
-      name: 'updatedAt',
-      label: '更新时间',
+      name: 'name',
+      label: '名称',
       valueType: 'text',
-      hideInForm: true,
-      render: (record: PaperListResponse) => {
-        return formatDate(record.updatedAt);
-      }
+      required: true
     },
     {
-      name: 'updatedAt',
+      name: 'code',
+      label: '编码',
+      valueType: 'text',
+      required: true
+    },
+    {
+      name: 'isEnable',
       label: '状态',
-      valueType: 'text',
-      hideInForm: true,
-      render: (record: PaperListResponse) => {
-        return !record.isEnable ? `禁用` : `启用`;
-      }
+      valueType: 'select',
+      options: [
+        {
+          value: false,
+          label: '禁用'
+        },
+        {
+          value: true,
+          label: '启用'
+        }
+      ]
+    },
+    {
+      name: 'order',
+      label: '排序',
+      valueType: 'text'
+    },
+    {
+      name: 'remark',
+      label: '备注',
+      valueType: 'text'
     }
   ];
 
@@ -52,10 +53,10 @@ export function useCompanyConfig() {
       name: '新增',
       onClickType: 'add',
       fields: COLUMNS,
-      dialogTitle: '添加题目',
+      dialogTitle: '添加字典',
       onConfirm: async (val: { [key: string]: any }) => {
         try {
-          await saveQuestionData({ ...val });
+          await saveDictionaryItem({ ...parameter, ...val });
           return true;
         } catch (error) {
           return (error as AxiosError).message;
@@ -67,10 +68,10 @@ export function useCompanyConfig() {
       name: '编辑',
       onClickType: 'edit',
       fields: COLUMNS,
-      dialogTitle: '编辑题目',
+      dialogTitle: '编辑字典',
       onConfirm: async (val: { [key: string]: any }) => {
         try {
-          await saveQuestionData({ ...val });
+          await saveDictionaryItem({ ...parameter, ...val });
           return true;
         } catch (error) {
           return (error as AxiosError).message;
@@ -88,11 +89,11 @@ export function useCompanyConfig() {
         return item.isEnable ? '禁用' : '启用';
       },
       dialogDescription: (item: { [key: string]: any }) => {
-        return item.isEnable ? `提示：禁用后该题目项将不能使用` : `提示：启用该题目`;
+        return item.isEnable ? `提示：禁用后该字典项将不能使用` : `提示：启用该字典项`;
       },
       onConfirm: async (val: { [key: string]: any }) => {
         try {
-          await enableQuestionData({ _id: val._id, isEnable: !val.isEnable });
+          await enableDictionaryItemData({ _id: val._id, isEnable: !val.isEnable });
           return true;
         } catch (error) {
           return (error as AxiosError).message;
@@ -104,10 +105,10 @@ export function useCompanyConfig() {
       name: '删除',
       onClickType: 'remove',
       dialogTitle: '删除',
-      dialogDescription: '是否删除该题目',
+      dialogDescription: '是否删除该字典',
       onConfirm: async (val: { [key: string]: any }) => {
         try {
-          await deleteQuestionData({ _id: val._id });
+          await deleteDictionaryItemData({ _id: val._id });
           return true;
         } catch (error) {
           return (error as AxiosError).message;

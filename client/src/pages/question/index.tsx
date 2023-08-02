@@ -3,7 +3,7 @@ import { Box, Flex } from '@chakra-ui/react';
 import SearchableTable from '../../hooks/useTable';
 import { Heading } from '@chakra-ui/react';
 import { useCompanyConfig } from './config';
-import { getDictionaryList } from '@/api/dictionary';
+import { getQuestionList } from '@/api/question';
 
 const Company = () => {
   const { operatingButton, COLUMNS } = useCompanyConfig();
@@ -15,13 +15,13 @@ const Company = () => {
       <Box position={'relative'} m={5} display="flex" justifyContent={'flex-start'}>
         {/* <CompanySearch /> */}
         {/* {modelId && <ModelDetail modelId={modelId} isPc={isPc} />} */}
-        <Heading>字典管理</Heading>
+        <Heading>题库管理</Heading>
       </Box>
 
       <Box flex={1} h={'100%'} position={'relative'} m={5}>
         {/* <CompanyTable /> */}
         <SearchableTable
-          listApi={getDictionaryList}
+          listApi={getQuestionList}
           columns={COLUMNS}
           operatingButton={operatingButton}
         />

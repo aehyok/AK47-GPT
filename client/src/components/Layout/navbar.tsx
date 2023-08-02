@@ -59,8 +59,14 @@ const Navbar = ({ unread }: { unread: number }) => {
       {
         label: '题库分类',
         icon: 'user',
-        link: '/dictionary',
-        activeLink: ['/dictionary']
+        link: '/dictionary/group',
+        activeLink: ['/dictionary/group']
+      },
+      {
+        label: '分类项',
+        icon: 'user',
+        link: '/dictionary/item',
+        activeLink: ['/dictionary/item']
       },
       {
         label: '题库',

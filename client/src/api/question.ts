@@ -1,6 +1,8 @@
 import { GET, POST, PUT } from './request';
 import { listParameterType } from '@/types/request';
 
+// 题目库
+
 /**
  * 列表
  */

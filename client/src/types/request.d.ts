@@ -13,6 +13,6 @@ export interface RequsetListType {
 
 export type listParameterType = {
   pageSize: number;
-  pageNumber: number;
+  pageNum: number;
   keyword?: string;
 };
