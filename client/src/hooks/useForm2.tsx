@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FormControl,
   FormLabel,
@@ -22,10 +22,6 @@ interface Option {
   label: string;
   value: string;
 }
-enum errorType {
-  import = '输入',
-  choose = '选择'
-}
 
 const Form = ({
   fields,
@@ -35,7 +31,7 @@ const Form = ({
   onClose
 }: {
   fields: columnsType[];
-  onSubmit: (formValues: { [key: string]: any }, type: string) => Promise<boolean | string>;
+  onSubmit: (formValues: { [key: string]: string }, type: string) => Promise<boolean | string>;
   formData: { [key: string]: string };
   type: string;
   onClose: () => void;
@@ -48,10 +44,8 @@ const Form = ({
     formState: { errors }
   } = useForm();
 
-  const handleChange = (e: { [key: string]: any }) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
-    console.log(e, '调');
-
     setFormValues({ ...formValues, [name]: value });
   };
 
@@ -59,55 +53,32 @@ const Form = ({
     setFormValues({ ...formValues, [field.name]: options });
   };
 
-  const onSubmitForm = async (e: { [key: string]: any }) => {
-    console.log(e, 'e');
-
-    // e.preventDefault();
+  const onSubmitForm = async (e: any) => {
+    e.preventDefault();
     setIsLoading(true);
-    const submitForm = getSubmitFormData(e);
+    const submitForm = getSubmitFormData();
     const isSuccess = await onSubmit(submitForm, type);
     setIsLoading(false);
     isSuccess === true && onClose();
   };
 
-  const getSubmitFormData = (e: { [key: string]: any }) => {
+  const getSubmitFormData = () => {
     const selectFieldNames = fields
       .filter((field) => field.valueType === 'select')
       .map((field) => field.name);
-    let submitForm = { ...e };
-    console.log(submitForm, 'submitForm1111', formValues, selectFieldNames);
-
+    let submitForm = { ...formValues };
     selectFieldNames.forEach((name) => {
-      const submitSelectValue = Array.isArray(e[name])
-        ? e[name].map((option: Option) => option.value)
-        : e[name].value;
+      const submitSelectValue = Array.isArray(formValues[name])
+        ? formValues[name].map((option: Option) => option.value)
+        : formValues[name].value;
       submitForm[name] = submitSelectValue;
     });
     console.log(submitForm, 'submitForm');
 
-    return { ...submitForm, _id: formData._id };
+    return submitForm;
   };
 
-  const getErrorMessage = useMemo(() => {
-    return function (type: string) {
-      if (type && ['select', 'checkbox'].includes(type)) return errorType.choose;
-      else return errorType.import;
-    };
-  }, []);
-
-  const defaultFromValue = useMemo(() => {
-    return function (
-      type: string | undefined,
-      name: string,
-      option: { label: string; value: string | boolean }[] | undefined
-    ) {
-      if (type && ['select', 'checkbox'].includes(type)) {
-        // 多选返回的值 未测试
-        const changeValue = option!.find((item) => item.value === formData[name]);
-        return changeValue;
-      } else return formData[name];
-    };
-  }, []);
+  // setFormValues(formData)
   useEffect(() => {
     /** 执行逻辑 */
     setFormValues(formData);
@@ -115,14 +86,14 @@ const Form = ({
 
   const generateComponent = (field: columnsType, refField: any) => {
     console.log(refField, 'fieldsaasdhasuidhsa');
+
     const components = {
       textarea: {
         component: Textarea,
         props: {
-          type: field.valueType,
           name: field.name,
-          // value: formValues[field.name] || '',
-          // onChange: handleChange
+          value: formValues[field.name] || '',
+          onChange: handleChange,
           ...refField
         }
       },
@@ -132,8 +103,8 @@ const Form = ({
           name: field.name,
           placeholder: '请选择',
           value: formValues[field.name] || '',
-          options: field.options,
           onChange: (options: Option[] | Option) => handleSelectChange(options, field),
+          options: field.options,
           ...refField
         }
       },
@@ -142,9 +113,8 @@ const Form = ({
         props: {
           name: field.name,
           isChecked: formValues[field.name] || false,
-          // onBlur: refField.onBlur,
-          // ref: refField.ref,
-          onChange: handleChange
+          onChange: handleChange,
+          ...refField
         }
       },
       text: {
@@ -152,23 +122,9 @@ const Form = ({
         props: {
           type: field.valueType,
           name: field.name,
-          // value: formValues[field.name] || '',
+          value: formValues[field.name] || '',
+          onChange: handleChange,
           ...refField
-          // onBlur: refField.onBlur,
-          // ref: refField.ref,
-          // onChange: handleChange
-        }
-      },
-      number: {
-        component: Input,
-        props: {
-          type: field.valueType,
-          name: field.name,
-          // value: formValues[field.name] || 0,
-          ...refField
-          // onBlur: refField.onBlur,
-          // ref: refField.ref,
-          // onChange: handleChange
         }
       }
     };
@@ -205,15 +161,13 @@ const Form = ({
                 rules={{ required: 'name is required' }}
                 render={() => generateComponent(field)}
               /> */}
-              {/* ${getErrorMessage(field!.valueType as string) */}
+
               <Controller
                 name={field.name}
                 control={control}
-                defaultValue={defaultFromValue(field.valueType, field.name, field.options)}
+                defaultValue=""
                 rules={{
-                  required: field.required
-                    ? `请${getErrorMessage(field.valueType as string)}${field.label}`
-                    : false,
+                  required: field.required ? `请选择${field.label}` : false,
                   ...field.rules
                 }}
                 render={({ field: refField }) => generateComponent(field, refField)}

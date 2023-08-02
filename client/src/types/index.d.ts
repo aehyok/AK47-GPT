@@ -61,12 +61,13 @@ export type OperatingButtonType = {
 export type columnsType = {
   name: string;
   label: string;
-  valueType?: 'text' | 'select' | 'textarea' | 'checkbox';
+  valueType?: 'text' | 'select' | 'textarea' | 'checkbox' | 'number';
   required?: boolean;
   render?: (record: any) => ReactNode;
-  options?: { label: string; value: string }[];
+  options?: { label: string; value: string | boolean }[];
   hideInForm?: boolean;
   error?: boolean;
   helperText?: string;
   formItemProps?: Record<string, any>;
+  rules?: Record<string, any>;
 };

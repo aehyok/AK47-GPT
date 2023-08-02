@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
-import SearchableTable from '../../hooks/useTable';
+import SearchableTable from '@/hooks/useTable';
 import { Heading } from '@chakra-ui/react';
 import { useCompanyConfig } from './config';
 import { getDictionaryList } from '@/api/dictionary';

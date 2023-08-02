@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useState, useMemo, useEffect } from 'react';
 import {
   Table,
   Thead,
@@ -14,7 +14,8 @@ import {
   Text,
   Flex,
   useDisclosure,
-  useToast
+  useToast,
+  useTheme
 } from '@chakra-ui/react';
 import { SearchIcon } from '@chakra-ui/icons';
 import AlertDialogForm from './useAlertDialog';
@@ -28,11 +29,15 @@ import { UseMutateFunction } from '@tanstack/react-query/build/lib/types';
 const SearchableTable = ({
   columns,
   operatingButton,
-  listApi
+  listApi,
+  clickColumns,
+  apiParameter
 }: {
   columns: Array<columnsType>;
-  operatingButton: Array<OperatingButtonType>;
   listApi: (data: listParameterType) => Promise<unknown>;
+  operatingButton?: Array<OperatingButtonType>;
+  clickColumns?: (data: { [key: string]: string }) => void;
+  apiParameter?: Record<any, any>;
 }) => {
   type formDataType = {
     formList: any;
@@ -44,9 +49,10 @@ const SearchableTable = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [formConfig, setFormConfig] = useState({} as formDataType);
   const [formValues, setFormValues] = useState({});
-
+  const [firstDataID, setFirstDataID] = useState('');
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
+  const theme = useTheme();
 
   const {
     pageNum,
@@ -68,7 +74,8 @@ const SearchableTable = ({
     api: listApi,
     pageSize: 10,
     params: {
-      keyword: searchTerm
+      keyword: searchTerm,
+      ...apiParameter
     }
   });
 
@@ -112,7 +119,12 @@ const SearchableTable = ({
     }
     if (isSuccess !== false) {
       toast({
-        title: isSuccess === true ? formConfig.title + '成功' : isSuccess,
+        title:
+          isSuccess === true
+            ? typeof formConfig.title === 'string'
+              ? formConfig.title
+              : formConfig.title(val) + '成功'
+            : isSuccess,
         status: isSuccess === true ? 'success' : 'warning'
       });
     }
@@ -142,6 +154,32 @@ const SearchableTable = ({
     );
   };
 
+  const hasEndOperating = useMemo(
+    () => operatingButton?.some((item, index) => item.type === 'end'),
+    [operatingButton]
+  );
+
+  useEffect(() => {
+    console.log(data, 'data');
+    if (data.length > 0) {
+      setFirstDataID(data?.[0]?._id);
+      console.log(data, 'asdasdas');
+      console.log('执行了多少次1111111');
+      if (data) clickColumns && clickColumns(data?.[0]);
+    }
+  }, [data]);
+  // useMemo(() => {
+  //   if (data.length > 0) {
+  //     setFirstDataID(data?.[0]?._id);
+  //     clickColumns && clickColumns(data?.[0]);
+  //     // return data?.[0]?._id;
+  //   }
+  // }, [data]);
+
+  useEffect(() => {
+    mutate(1);
+    // console.log('执行了多少次222222');
+  }, [apiParameter, mutate]);
   return (
     <Box>
       <AlertDialogForm
@@ -157,24 +195,26 @@ const SearchableTable = ({
 
       <Flex w={'100%'} display="flex" justifyContent={'space-between'}>
         <Box>
-          {operatingButton.map((item, index) =>
-            item.type === 'head' ? (
-              <Button
-                ml={2}
-                onClick={() => {
-                  setFormValues({}), btnClick(item);
-                }}
-                disabled={!searchTerm}
-                colorScheme="blue"
-                variant="outline"
-                key={index}
-              >
-                {item.name}
-              </Button>
-            ) : (
-              ''
-            )
-          )}
+          {operatingButton
+            ? operatingButton.map((item, index) =>
+                item.type === 'head' ? (
+                  <Button
+                    ml={2}
+                    onClick={() => {
+                      setFormValues({}), btnClick(item);
+                    }}
+                    disabled={!searchTerm}
+                    colorScheme="blue"
+                    variant="outline"
+                    key={index}
+                  >
+                    {item.name}
+                  </Button>
+                ) : (
+                  ''
+                )
+              )
+            : ''}
         </Box>
         <Box>
           <InputGroup mb={4}>
@@ -206,25 +246,50 @@ const SearchableTable = ({
       </Flex>
       {data?.length === 0 || false}
       {data?.length > 0 ? (
-        <Table variant="striped" overflowX="auto" layout="">
+        <Table variant={clickColumns ? '' : 'striped'} overflowX="auto" layout="100">
           <Thead>
             <Tr>
               {columns.map((column) => (
                 <Th key={column.label}>{column.label}</Th>
               ))}
-              <Th>OPERATION</Th>
+              {hasEndOperating ? <Th minW={'200px'}>操作</Th> : ''}
             </Tr>
           </Thead>
           <Tbody>
             {data?.map((item, index) => (
-              <Tr key={index}>
+              <Tr
+                key={index}
+                _hover={{
+                  backgroundImage: ['', theme.lgColor.hoverBlueGradient]
+                }}
+                {...(item._id === firstDataID
+                  ? {
+                      backgroundImage: `${theme.lgColor.activeBlueGradient}  !important`
+                    }
+                  : {
+                      bg: item.top ? 'myGray.200' : ''
+                    })}
+                onClick={async () => {
+                  setFirstDataID(item?._id);
+                  clickColumns && clickColumns(item);
+                }}
+              >
                 {Object.values(columns).map((value, index) => (
-                  <Td key={index}> {value.render ? value.render(item) : item[value.name]}</Td>
+                  <Td
+                    minW={'200px'}
+                    key={index}
+                    cursor={'pointer'}
+                    transition={'background-color .2s ease-in'}
+                  >
+                    {value.render ? value.render(item) : item[value.name]}
+                  </Td>
                 ))}
                 <Td>
-                  {operatingButton.map((btnItem, btnIndex) =>
-                    OperatingButtonView(btnItem, btnIndex, item)
-                  )}
+                  {operatingButton
+                    ? operatingButton.map((btnItem, btnIndex) =>
+                        OperatingButtonView(btnItem, btnIndex, item)
+                      )
+                    : ''}
                 </Td>
               </Tr>
             ))}

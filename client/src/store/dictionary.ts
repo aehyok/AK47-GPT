@@ -2,10 +2,12 @@ import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { getDictionaryItemListApi } from '@/api/dictionary/item';
+// import { getDictionaryList } from '@/api/dictionary';
 import { DictionaryType } from '@/api/response/dictionary.d';
 
 type State = {
   dictionaryList: DictionaryType[];
+  // dictionaryGroud: DictionaryType[];
   dictionary: {
     level: DictionaryType[];
     themeType: DictionaryType[];
@@ -25,6 +27,7 @@ type State = {
 export const useDictionaryStore = create<State>()(
   devtools(
     immer((set, get) => ({
+      // dictionaryGroud: [],
       dictionaryList: [],
       dictionary: {
         level: [],
@@ -40,6 +43,13 @@ export const useDictionaryStore = create<State>()(
               state.dictionary[item.groupCode].push(item);
             });
           });
+          //   const resGroup = await getDictionaryList({
+          //     pageNum: 1,
+          //     pageSize: 20
+          //   });
+          //   set((state) => {
+          //     state.dictionaryGroud = resGroup.data;
+          //   });
         } catch (error) {}
       },
       getDictionaryAndOption(groupCode) {
