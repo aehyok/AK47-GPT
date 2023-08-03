@@ -76,7 +76,8 @@ const SearchableTable = ({
     params: {
       keyword: searchTerm,
       ...apiParameter
-    }
+    },
+    defaultRequest: apiParameter ? false : true
   });
 
   const cancelRef = React.useRef();
@@ -152,8 +153,10 @@ const SearchableTable = ({
   // }, [data]);
 
   useEffect(() => {
-    mutate(1);
-    // console.log('执行了多少次222222');
+    if (apiParameter && JSON.stringify(apiParameter) !== '{}') {
+      mutate(1);
+    }
+    console.log('执行了多少次222222');
   }, [apiParameter, mutate]);
   return (
     <Box>
