@@ -45,18 +45,6 @@ const Navbar = ({ unread }: { unread: number }) => {
         activeLink: ['/model/share']
       },
       {
-        label: '考卷',
-        icon: 'paper',
-        link: '/paper',
-        activeLink: ['/paper', '/paper/exam']
-      },
-      {
-        label: '账号',
-        icon: 'user',
-        link: '/number',
-        activeLink: ['/number']
-      },
-      {
         label: '题库分类',
         icon: 'user',
         link: '/dictionary/group',
@@ -73,7 +61,19 @@ const Navbar = ({ unread }: { unread: number }) => {
         icon: 'user',
         link: '/question',
         activeLink: ['/question']
-      }
+      },
+      {
+        label: '考卷',
+        icon: 'paper',
+        link: '/paper',
+        activeLink: ['/paper', '/paper/exam']
+      },
+      {
+        label: '账号',
+        icon: 'user',
+        link: '/number',
+        activeLink: ['/number']
+      },
     ],
     [lastChatId, lastChatModelId, lastModelId]
   );
