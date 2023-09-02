@@ -69,6 +69,30 @@ const Navbar = ({ unread }: { unread: number }) => {
         activeLink: ['/paper', '/paper/exam']
       },
       {
+        label: '企业管理',
+        icon: 'company',
+        link: '/manage/company',
+        activeLink: ['/manage/company']
+      },
+      {
+        label: '用户管理',
+        icon: 'user',
+        link: '/manage/user',
+        activeLink: ['/manage/user']
+      },
+      {
+        label: '角色管理',
+        icon: 'role',
+        link: '/manage/role',
+        activeLink: ['/manage/role']
+      },
+      {
+        label: '菜单管理',
+        icon: 'menu',
+        link: '/manage/menu',
+        activeLink: ['/manage/menu']
+      },
+      {
         label: '账号',
         icon: 'user',
         link: '/number',
